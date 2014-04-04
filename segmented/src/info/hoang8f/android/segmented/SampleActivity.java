@@ -42,7 +42,8 @@ public class SampleActivity extends ActionBarActivity {
 
             SegmentedGroup segmented3 = (SegmentedGroup) rootView.findViewById(R.id.segmented3);
             //Tint color, and text color when checked
-            segmented3.setTintColor(Color.parseColor("#FFD0FF3C"), Color.parseColor("#FF7B07B2"));
+            //segmented3.setTintColor(Color.parseColor("#FFD0FF3C"), Color.parseColor("#FF7B07B2"));
+            segmented3.setTintColor(Color.parseColor("#FFFF0000"), Color.parseColor("#FF0000FF"));
 
             SegmentedGroup segmented4 = (SegmentedGroup) rootView.findViewById(R.id.segmented4);
             segmented4.setTintColor(getResources().getColor(R.color.radio_button_selected_color));
