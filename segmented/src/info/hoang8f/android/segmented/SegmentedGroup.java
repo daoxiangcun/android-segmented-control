@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -34,7 +33,6 @@ public class SegmentedGroup extends RadioGroup {
         resources = getResources();
         mTintColor = resources.getColor(R.color.radio_button_selected_color);
         oneDP = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, resources.getDisplayMetrics());
-
     }
 
     @Override
@@ -58,18 +56,36 @@ public class SegmentedGroup extends RadioGroup {
     private void updateBackground() {
         int count = super.getChildCount();
         LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, 0, -oneDP, 0);
-        if (count > 1) {
-            super.getChildAt(0).setLayoutParams(params);
-            updateBackground(getChildAt(0), R.drawable.radio_checked_left, R.drawable.radio_unchecked_left);
-
-            for (int i = 1; i < count - 1; i++) {
-                updateBackground(getChildAt(i), R.drawable.radio_checked_middle, R.drawable.radio_unchecked_middle);
-                super.getChildAt(i).setLayoutParams(params);
-            }
-            updateBackground(getChildAt(count - 1), R.drawable.radio_checked_right, R.drawable.radio_unchecked_right);
-        } else if (count == 1) {
+        if(count == 1){
             updateBackground(getChildAt(0), R.drawable.radio_checked_default, R.drawable.radio_unchecked_default);
+        }else if (count > 1) {
+            int orientation = getOrientation();
+            if(orientation == HORIZONTAL){
+                params.setMargins(0, 0, -oneDP, 0);
+            }else if(orientation == VERTICAL){
+                params.setMargins(0, 0, 0, -oneDP);
+            }
+
+            for(int i = 0; i < count; i++){
+                View child = getChildAt(i);
+                if(i == 0){
+                    if(orientation == HORIZONTAL){
+                        updateBackground(child, R.drawable.radio_horizontal_checked_left, R.drawable.radio_horizontal_unchecked_left);
+                    }else if(orientation == VERTICAL){
+                        updateBackground(child, R.drawable.radio_vertical_checked_top, R.drawable.radio_vertical_unchecked_top);
+                    }
+                    child.setLayoutParams(params);
+                }else if(i == count -1){
+                    if(orientation == HORIZONTAL){
+                        updateBackground(child, R.drawable.radio_horizontal_checked_right, R.drawable.radio_horizontal_unchecked_right);
+                    }else if(orientation == VERTICAL){
+                        updateBackground(child, R.drawable.radio_vertical_checked_bottom, R.drawable.radio_vertical_unchecked_bottom);
+                    }
+                }else{
+                    updateBackground(child, R.drawable.radio_checked_middle,  R.drawable.radio_unchecked_middle);
+                    child.setLayoutParams(params);
+                }
+            }
         }
     }
 
@@ -93,11 +109,6 @@ public class SegmentedGroup extends RadioGroup {
         stateListDrawable.addState(new int[]{-android.R.attr.state_checked}, uncheckedDrawable);
         stateListDrawable.addState(new int[]{android.R.attr.state_checked}, checkedDrawable);
 
-        //Set button background
-        if (Build.VERSION.SDK_INT >= 16) {
-            view.setBackground(stateListDrawable);
-        } else {
-            view.setBackgroundDrawable(stateListDrawable);
-        }
+        view.setBackgroundDrawable(stateListDrawable);
     }
 }
